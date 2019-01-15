@@ -1,7 +1,8 @@
 var http = require('http')
 var fs = require('fs')
 var url = require('url')
-var port = process.argv[2]
+
+var port = process.env.PORT || 8888
 
 if (!port) {
 	// 当前路径下只有server.js文件 node server.js或node server都会执行这个文件
@@ -10,21 +11,20 @@ if (!port) {
 }
 
 var server = http.createServer(function (request, response) {
-	var parseUrl = url.parse(request.url, true)
-	var path = request.url
-	var query = ''
-	if (path.indexOf('?') >= 0) { query = path.substring(path.indexOf('?')) }
-	var pathNoQuery = parseUrl.pathname
-	var queryObject = parseUrl.query
+	var parsedUrl = url.parse(request.url, true)
+	var pathWithQuery = request.url
+	var queryString = ''
+	if (pathWithQuery.indexOf('?') >= 0) { queryString = pathWithQuery.substring(pathWithQuery.indexOf('?')) }
+	var path = parsedUrl.pathname
+	var query = parsedUrl.query
 	var method = request.method
 
 	/******** 从这里开始看，上面不要看 ************/
 
 
-	console.log('Server说：收到一个HTTP访问请求 请求路径为\n' + path)
-	// console.log('方方说：得到 HTTP 路径\n' + path)
-	// console.log('方方说：查询字符串为\n' + query)
-	// console.log('方方说：不含查询字符串的路径为\n' + pathNoQuery)
+	console.log('Server说：得到一个HTTP访问请求 请求路径为\n' + pathWithQuery)
+	// console.log('方方说：查询字符串为\n' + queryString)
+	// console.log('方方说：不含查询字符串的路径为\n' + path)
 
 
 	if (path === '/') {
@@ -41,15 +41,19 @@ var server = http.createServer(function (request, response) {
 		response.setHeader('Content-Type', 'text/javascript; charset=utf-8')
 		response.write('alert("I\'m a js file")')
 		response.end()
-	} else if (pathNoQuery === '/pay') {
+	} else if (path === '/pay') {
 		
 		let amt = fs.readFileSync('./payDB')
-		fs.writeFileSync('./payDB', amt - 1)
-		
-		response.setHeader('Content-Type', 'text/javascript; charset=utf-8')
-		response.write('amt.innerText = ' + (amt - 1))
+		if(Math.random() * 100 > 50) {
+			fs.writeFileSync('./payDB', amt - 1)			
+			response.setHeader('Content-Type', 'text/javascript; charset=utf-8')
+			response.write('amt.innerText = ' + (amt - 1))
+		}else {
+			response.write('alert(error)')			
+		}
+
 		response.end()
-				
+		
 	} else {
 		response.statusCode = 404
 		response.setHeader('Content-Type', 'text/plain; charset=utf-8')
