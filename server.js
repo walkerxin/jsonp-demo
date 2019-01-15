@@ -47,9 +47,12 @@ var server = http.createServer(function (request, response) {
 		if(Math.random() * 100 > 50) {
 			fs.writeFileSync('./payDB', amt - 1)			
 			response.setHeader('Content-Type', 'text/javascript; charset=utf-8')
-			response.write('amt.innerText = ' + (amt - 1))
+			response.write(`${query.callback}.call(undefined, { 
+				"success": true,
+				"data": "some data"
+			}`)
 		}else {
-			response.write('alert(error)')			
+			response.write(query.callback + '.call(undefined, "fail")')			
 		}
 
 		response.end()

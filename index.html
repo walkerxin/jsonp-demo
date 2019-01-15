@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>JSONP</title>
+    <!-- JSONP只是一个名称，实际是完成动态标签跨域请求 -->
 </head>
 <body>
     
@@ -13,10 +14,17 @@
 
     <script>
         
+        function xxx(result) {            
+            if(result === 'success') {
+                amt.innerText -= 1
+            }
+        }
+        
         payBtn.addEventListener('click', function() {
             // 造 script 标签发请求
             var script = document.createElement('script')
-            script.src= 'http://jack.com:1233/pay'
+            script.src= 'http://jack.com:9002/pay?callback=xxx'
+
             // 发现需把 script 放到页面中才会发起请求
             document.getElementsByTagName('body')[0].appendChild(script)
             
