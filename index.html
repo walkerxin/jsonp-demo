@@ -9,18 +9,19 @@
 <body>
     
     <p>您的余额还有：<span id="amt">&&&amt&&&</span> RMB</p>
-    <form id="form" action="/pay" method="POST" target="xxx">
-        <input type="number" name="money">
-        <button>付钱</button>
-    </form>
-
-    <iframe name="xxx" src="" frameborder="0"></iframe>
+    <input type="number" name="money">
+    <button id="payBtn">付钱</button>
 
     <script>
         
-        form.addEventListener('submit', function() {
+        payBtn.addEventListener('click', function() {
             var input = document.getElementsByTagName('input')
-            amt.innerText -= parseFloat(input[0].value) ? input[0].value : 1
+            var payAmt = input[0].value ? input[0].value : 1
+            // 造 script 标签发请求
+            var script = document.createElement('script')
+            script.src= 'http://jack.com:1233/pay?callback=xxx' + '&payAmt=' + payAmt
+            // 发现需把 script 放到页面中才会发起请求
+            document.getElementsByTagName('body')[0].appendChild(script)
         })
         
     </script>

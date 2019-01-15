@@ -41,23 +41,15 @@ var server = http.createServer(function (request, response) {
 		response.setHeader('Content-Type', 'text/javascript; charset=utf-8')
 		response.write('alert("I\'m a js file")')
 		response.end()
-	} else if (path === '/pay') {
-		const { headers, method, url } = request;
-		let body = []
-		request.on('error', (err) => {
-			console.error('你请求错了！', err);
-		}).on('data', (chunk) => {
-			body.push(chunk);
-		}).on('end', () => {
-			body = Buffer.concat(body).toString();
-			// At this point, we have the headers, method, url and body, and can now
-			// do whatever we need to in order to respond to this request.
-			let payAmt = (body && body.split('=').length) ? body.split('=')[1] : 1
-			let amt = fs.readFileSync('./payDB')			
-			fs.writeFileSync('./payDB', amt - payAmt)			
-			response.write('success')
-			response.end()
-		});
+	} else if (pathNoQuery === '/pay') {
+		
+		let amt = fs.readFileSync('./payDB')
+		let payAmt = queryObject.payAmt ? queryObject.payAmt : 1
+		fs.writeFileSync('./payDB', amt - payAmt)
+		
+		response.setHeader('Content-Type', 'text/javascript; charset=utf-8')
+		response.write('amt.innerText = ' + (amt - payAmt))
+		response.end()
 				
 	} else {
 		response.statusCode = 404
