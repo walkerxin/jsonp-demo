@@ -44,11 +44,10 @@ var server = http.createServer(function (request, response) {
 	} else if (pathNoQuery === '/pay') {
 		
 		let amt = fs.readFileSync('./payDB')
-		let payAmt = queryObject.payAmt ? queryObject.payAmt : 1
-		fs.writeFileSync('./payDB', amt - payAmt)
+		fs.writeFileSync('./payDB', amt - 1)
 		
 		response.setHeader('Content-Type', 'text/javascript; charset=utf-8')
-		response.write('amt.innerText = ' + (amt - payAmt))
+		response.write('amt.innerText = ' + (amt - 1))
 		response.end()
 				
 	} else {

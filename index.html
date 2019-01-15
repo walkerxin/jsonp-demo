@@ -8,20 +8,25 @@
 </head>
 <body>
     
-    <p>您的余额还有：<span id="amt">&&&amt&&&</span> RMB</p>
-    <input type="number" name="money">
+    <p>您的余额还有：<span id="amt">&&&amt&&&</span> RMB</p>    
     <button id="payBtn">付钱</button>
 
     <script>
         
         payBtn.addEventListener('click', function() {
-            var input = document.getElementsByTagName('input')
-            var payAmt = input[0].value ? input[0].value : 1
             // 造 script 标签发请求
             var script = document.createElement('script')
-            script.src= 'http://jack.com:1233/pay?callback=xxx' + '&payAmt=' + payAmt
+            script.src= 'http://jack.com:1233/pay'
             // 发现需把 script 放到页面中才会发起请求
             document.getElementsByTagName('body')[0].appendChild(script)
+            
+            script.onload = function() {
+                document.getElementsByTagName('body')[0].removeChild(script)
+            }
+            
+            script.onerror = function() {
+                document.getElementsByTagName('body')[0].removeChild(script)
+            }
         })
         
     </script>
